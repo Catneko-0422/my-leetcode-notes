@@ -43,15 +43,15 @@ int main(){
     string input;
     
     cin >> input;
-    for(auto item : Object.letterCombinations(input)){
-        cout << item << ",";
+    cout << "[";
+    for(int i=0;i<Object.letterCombinations(input).size();i++){
+      if(i!=Object.letterCombinations(input).size()-1){
+        cout << "\"" << Object.letterCombinations(input)[i] << "\",";
+      }else {
+        cout << "\"" << Object.letterCombinations(input)[i] << "\"";
+      }
     }
-
-    
-
-
-    
-    
+    cout << "]";
 
     return 0;
 }
