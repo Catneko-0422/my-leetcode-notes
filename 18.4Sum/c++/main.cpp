@@ -1,59 +1,56 @@
 #include <iostream>
 #include <vector>
 #include <algorithm>
-#define ll long long
 using namespace std;
 
 class Solution {
-private:
-    void callback(int target, int start, vector<int>& temp, vector<int>& nums, vector<vector<int>>& res) {
-        if (temp.size() == 4) {
-            int sum = 0;
-            for (long num : temp) sum += num;
-            if (sum == target) {
-                res.push_back(temp);
-            }
-            return;
-        }
-
-        for (int i = start; i < nums.size(); i++) {
-            if (i > start && nums[i] == nums[i - 1]) continue;
-            temp.push_back(nums[i]);
-            callback(target, i + 1, temp, nums, res);
-            temp.pop_back();
-        }
-    }
-
 public:
     vector<vector<int>> fourSum(vector<int>& nums, int target) {
         vector<vector<int>> res;
-        vector<int> temp;
-        sort(nums.begin(), nums.end());
-        callback(target, 0, temp, nums, res);
-        ll check = 0;
-        for(auto item : res){
-            ll sum = 0;
-            for (ll num : item) { sum += num; } 
-            if (sum == target) { check++; }
+        int n = nums.size();
+        if (n < 4) return res; 
+        
+        sort(nums.begin(), nums.end()); 
+        
+        for (int i = 0; i < n - 3; i++) {
+            if (i > 0 && nums[i] == nums[i - 1]) continue; 
+            for (int j = i + 1; j < n - 2; j++) {
+                if (j > i + 1 && nums[j] == nums[j - 1]) continue; 
+                
+                int left = j + 1, right = n - 1;
+                while (left < right) {
+                    long long sum = (long long)nums[i] + nums[j] + nums[left] + nums[right]; // 使用 long long 避免溢位
+                    
+                    if (sum == target) {
+                        res.push_back({nums[i], nums[j], nums[left], nums[right]});
+                        while (left < right && nums[left] == nums[left + 1]) left++; // 避免重複
+                        while (left < right && nums[right] == nums[right - 1]) right--; // 避免重複
+                        left++, right--;
+                    } else if (sum < target) {
+                        left++;
+                    } else {
+                        right--;
+                    }
+                }
+            }
         }
-        if (check == res.size()) return res;
-        else return {};
+        return res;
     }
 };
 
 int main() {
     Solution s;
     vector<int> nums;
-    int target = 0;  
-    cin >> target; 
+    int target;
+    cin >> target;
     int num;
-    while (cin >> num) { 
+    while (cin >> num) {
         nums.push_back(num);
-        if (cin.peek() == '\n') break;  
+        if (cin.peek() == '\n') break;
     }
 
     vector<vector<int>> res = s.fourSum(nums, target);
-    for (auto item : res) {
+    for (auto& item : res) {
         for (int num : item) {
             cout << num << " ";
         }
